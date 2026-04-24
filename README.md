@@ -34,3 +34,37 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+
+## 📦 Project Packages & Setup
+
+### 1. Core Dependencies
+
+| Command | Purpose |
+|---|---|
+| `npm install clsx tailwind-merge class-variance-authority` | Utility packages for clean Tailwind class handling and reusable UI variants |
+| `npm install lucide-react` | Icon library |
+| `npm install framer-motion` | Animations and transitions |
+| `npm install react-hook-form zod @hookform/resolvers` | Forms and validation |
+| `npm install next-themes sonner` | Theme switching and toast notifications |
+| `npm install swr date-fns` | Data fetching/cache and date formatting |
+| `npm install mongoose bcrypt` | MongoDB connection/models and password hashing |
+| `npm install recharts` | Charts for dashboards/statistics |
+
+Full command:
+
+```bash
+npm install clsx tailwind-merge class-variance-authority lucide-react framer-motion react-hook-form zod @hookform/resolvers next-themes sonner swr date-fns mongoose bcrypt recharts
+
+
+
+
+
+
+
+
+
+
+
+
+Start white header.tsx
