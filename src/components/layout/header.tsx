@@ -1,27 +1,47 @@
 "use client"
 
-import { useTheme } from "next-themes";
-import { usePathname, useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
-import { cn } from "../../../lib/utils";
-import Image from "next/image";
-import Link from "next/link";
+import * as React from "react"
+import Link from "next/link"
+import Image from "next/image"
+import { useEffect, useState } from "react"
+import { useTheme } from "next-themes"
+import { usePathname, useRouter } from "next/navigation"
 import {
-    NavigationMenu,
-    NavigationMenuContent,
-    NavigationMenuItem,
-    NavigationMenuLink,
-    NavigationMenuList,
-    NavigationMenuTrigger,
+  Bell,
+  Book,
+  GraduationCap,
+  LogOut,
+  Menu,
+  Moon,
+  Settings,
+  Sun,
+  User,
+} from "lucide-react"
 
-}
-    from "@radix-ui/react-navigation-menu";
-import { Bell, Book, Moon, Sun, User } from "lucide-react";
-import { navigationMenuTriggerStyle } from "../ui/navigation-menu";
-import { Button } from "../ui/button";
-// import { NavigationMenuContent } from "../ui/navigation-menu";
-// from "../ui/navigation-menu";
-
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu"
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
+import {
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb"
 const components: { title: string; href: string; description: string }[] = [
     {
         title: "لوحة تحكم المدير ", // لوحة تحكم المدير  dashboard Admin
@@ -98,7 +118,7 @@ export function Header() {
                 <div className="flex items-center justify-between h-14">
                     {/* Logo */}
                     <Link href="/" className="flex items-center gap-2 ml-8">
-                        <Image src="/logo.png" alt="Company Logo" width={120} height={40} priority />
+                        <Image src="/logo.png" alt="Company Logo" width={120} height={40} priority className="h-20 w-auto"/>
                     </Link>
                     {/* Desktop navigation */}
                     <div className="hidden md:flex flex-1 justify-center">
@@ -173,7 +193,7 @@ export function Header() {
                     </div>
                     {/* Right section: yheme and profil */}
                     <div className="hidden md:flex items-center gap-4">
-                        <Button variant='ghost' size="icon" className="rounded-full" onClick={()=>setTheme(theme === "dark" ? "Light" : "dark")}>
+                        <Button variant='ghost' size="icon" className="rounded-full" onClick={()=>setTheme(theme === "dark" ? "light" : "dark")}>
                             <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
                             <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0  dark:rotate-0 dark:scale-100" />
                             <span className="sr-only">
@@ -196,13 +216,126 @@ export function Header() {
                                         </span>
                                     </div>
                                 </Link>
-                                <Button variant="ghost" size="sm" onClick={handleLogout} className="text-destructive hover:">
+                                <Button variant="ghost" size="sm" onClick={handleLogout} className="text-destructive hover:text-destructive/80">
+                                    <LogOut className="h-4 w-4 ml-2"/>
                                     {/* min 43:00 */}
+                                        تسجيل الخروج
                                 </Button>
+
                             </>
+                        ):(
+                            <Link href="/login" className="text-sm font-medium hover:text-primary transition-colors">
+                                <Button variant="secondary" size="sm" className="rounded-full px-6">
+                                    تسجيل الدخول
+                                </Button>
+                            </Link>
                         )}
                     </div>
+                    {/* mobile taggele */}
+                    <div className="md:hidden flex items-center gap-4">
+                        <Button variant="ghost" size="icon" onClick={()=>setTheme(theme === "dark" ? "light" : "dark")
+                        }>
+                            <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                            <Moon className="h-5 w-5 absolute rotate-90 scale-0  dark:rotate-0 dark:scale-100" /> 
+                        </Button>
+                        <Sheet>
+                            <SheetTrigger asChild>
+                                <Button variant="ghost" size="icon">
+                                    <Menu className="h-6 w-6 "/>
+                                </Button>
+                            </SheetTrigger>
+                            <SheetContent side="left" className="w-75 sm:w-100">
+                                <SheetHeader>
+                                    <SheetTitle className="text-right flex items-center gap-2">
+                                        <GraduationCap className="h-6 w-6 text-primary">
+                                            قائمة ums
+                                        </GraduationCap>
+                                    </SheetTitle>
+                                </SheetHeader>
+                                <div className="grid -gap-6 py-8">
+                                    {user &&(
+                                        <div className="flex items-center gap-3 p-4 bg-muted/50 rounded-lg">
+                                            <div className="bg-primary/10 p-2 rounded-full">
+                                                <User className="text-primary w-5 h-5"/>
+                                            </div>
+                                            <div className="font-medium">
+                                                <p>{user.name}</p>
+                                                <p className="text-xs text-muted-foreground">{user.email}</p>
+                                            </div>
+                                        </div>
+                                    )}
+                                    <div className="grid gap-2 ">
+                                        <h3>لوحة التحكم</h3>
+                                        {components.filter((component)=>{
+                                                if(!user) return false;
+                                                if(user.role === "admin") return true;
+                                                if(user.role === "professor") 
+                                                    return component.href === "/dashboard/Professor";
+                                                if(user.role === "student") 
+                                                    return component.href === "/dashboard/student";
+                                                return false;
+                                            })
+                                            .map((component)=>(
+                                                <ListItem key={component.title} title={component.title} href={component.href}>
+                                                    {component.description}
+                                            </ListItem>
+                                            ))}
+                                    </div>
+                                    <div className="grid gap-2 ">
+                                        <h3 >الحساب</h3>
+                                        {user ?(
+                            <>
+                                <Link href="/settings" className="flex items-center gap-2 text-sm hover:text-primary transition-colors">
+                                            <Settings className=" w-4 h-4"/>
+                                            الأعدادات
+                                        </Link>
+                                        {/*  */}
+                                <Button variant="ghost" size="sm" onClick={handleLogout} className="flex items-center gap-2 text-sm hover:text-primary transition-colors">
+                                    <LogOut className=" w-4 h-4"/>
+                                    {/* min 43:00 */}
+                                        تسجيل الخروج
+                                </Button>
+
+                            </>
+                        ):(
+                            <Link href="/login" className="flex items-center gap-2 text-sm hover:text-primary transition-colors">
+                                <User className=" w-4 h-4"/>
+                                    تسجيل الدخول
+                                
+                            </Link>
+                        )}
+                                    </div>
+                                </div>
+                            </SheetContent>
+                        </Sheet>
+                    </div>
                 </div>
+                    {
+                        paths.map((path, index)=>{
+                            const href = "/" + paths.slice(0, index + 1).join("/");
+                            const isLast = index === paths.length - 1;
+                            const title = arabicPaths[path] || 
+                            path.charAt(0).toUpperCase() + path.slice(1);
+
+                            return(<>
+                            <React.Fragment key={href}>
+                                <BreadcrumbSeparator className="mx-2 text-muted-foreground"/>
+                                <BreadcrumbItem>
+                                    {isLast ? (
+                                        <BreadcrumbPage>
+                                            {title}
+                                        </BreadcrumbPage>
+                                    ) : (
+                                        <BreadcrumbLink href={href} >
+                                            {title}
+                                        </BreadcrumbLink>
+                                    )}
+                                </BreadcrumbItem>
+                            </React.Fragment>
+                            </>)
+                            
+                        }
+                    )}
             </div>
         </header>
     );
